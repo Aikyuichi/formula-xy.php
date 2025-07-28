@@ -105,7 +105,7 @@ class Formula {
             throw SyntaxException::invalidSyntax();
         }
         $this->components = self::splitExpression($expression, $operators);
-        if (!self::validParenthesis($components)) {
+        if (!self::validParenthesis($this->components)) {
             throw SyntaxException::invalidParentheses();
         }
     }
