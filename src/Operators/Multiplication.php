@@ -5,13 +5,13 @@
 
 namespace Aikyuichi\FormulaXY\Operators;
 
-class SubtractionOperator extends BinaryOperator {
+class Multiplication extends BinaryOperator {
 
     public function __construct() {
-        parent::__construct('-', 0);
+        parent::__construct('*', 0);
     }
 
     public function resolve($value1, $value2) {
-        return $value1 - $value2;
+        return $value1 * $value2;
     }
 }

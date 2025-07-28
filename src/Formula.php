@@ -7,7 +7,7 @@ namespace Aikyuichi\FormulaXY;
 
 use Aikyuichi\FormulaXY\Operand;
 use Aikyuichi\FormulaXY\Operation;
-use Aikyuichi\FormulaXY\Operators\ { AdditionOperator, DivisionOperator, MultiplicationOperator, Operator, SubtractionOperator };
+use Aikyuichi\FormulaXY\Operators\ { Addition, Division, Multiplication, Operator, Subtraction };
 use Aikyuichi\FormulaXY\Exceptions\SyntaxException;
 
 class Formula {
@@ -55,10 +55,10 @@ class Formula {
 
     static private function getDefaultOperators() {
         return [
-            new AdditionOperator(),
-            new DivisionOperator(),
-            new MultiplicationOperator(),
-            new SubtractionOperator(),
+            new Addition(),
+            new Division(),
+            new Multiplication(),
+            new Subtraction(),
         ];
     }
 
