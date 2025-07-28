@@ -20,7 +20,7 @@ class Formula {
     private $variables = [];
 
     static public function eval($expression, $options = []) {
-        $operators = $options['operators'] ?? self::getDefaultOperators();
+        $operators = !empty($options['operators']) ? $options['operators'] : self::getDefaultOperators();
         $operands = $options['operands'] ?? null;
         $allowConstants = $options['allowConstants'] ?? true;
         
@@ -30,7 +30,8 @@ class Formula {
         if (!isset($operands)) {
             $operands = $components;
         }
-        $invalidComponents = array_diff($components, $operands);
+        $validComponents = array_unique(array_merge(array_map(function($operator) { return $operator->getSymbol(); }, $operators), $operands, ['(', ')']));
+        $invalidComponents = array_diff($components, $validComponents);
         if ($allowConstants) {
             $invalidComponents = array_filter($invalidComponents, function($component) { return !self::isConstant($component); });
         }
