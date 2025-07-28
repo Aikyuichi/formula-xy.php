@@ -7,7 +7,7 @@ namespace Aikyuichi\FormulaXY;
 
 use Aikyuichi\FormulaXY\Operand;
 use Aikyuichi\FormulaXY\Operation;
-use Aikyuichi\FormulaXY\Operator;
+use Aikyuichi\FormulaXY\Operators\ { AdditionOperator, DivisionOperator, MultiplicationOperator, Operator, SubtractionOperator };
 use Aikyuichi\FormulaXY\Exceptions\SyntaxException;
 
 class Formula {
@@ -20,41 +20,77 @@ class Formula {
     private $variables = [];
 
     static public function eval($expression, $options = []) {
-        $operators = $options['operatos'] ?? self::getDefaultOperators();
+        $operators = $options['operators'] ?? self::getDefaultOperators();
         $operands = $options['operands'] ?? null;
         $allowConstants = $options['allowConstants'] ?? true;
         
+        $syntaxValid = self::validExpression($expression, $operators);
+        $components = self::splitExpression($expression, $operators);
+        $parenthesisValid = self::validParenthesis($components);
+        if (!isset($operands)) {
+            $operands = $components;
+        }
+        $invalidComponents = array_diff($components, $operands);
+        if ($allowConstants) {
+            $invalidComponents = array_filter($invalidComponents, function($component) { return !self::isConstant($component); });
+        }
         $formula = null;
-        $errors = [];
-        $invalidComponents = [];
-        try {
-            $formula = new self($expression, $operators);
-            $symbols = array_map(function($operator) { return $operator->getSymbol(); }, $operators);
-            if (isset($operands)) {
-                $components = array_merge($operands, $symbols);
-            } else {
-                $components = array_merge($formula->getComponents(), $symbols);
+        $error = [];
+        if (empty($invalidComponents)) {
+            try {
+                $formula = new self($expression, $operators);
+            } catch(SyntaxException $ex) {
+                $errors[$ex->getCode()] = $ex->getMessage();
             }
-            $invalidComponents = array_diff($formula->getComponents(), $components);
-            if ($allowConstants) {
-                $invalidComponents = array_filter($invalidComponents, function($component) { return !self::isConstant($component); });
-            }
-            if (count($invalidComponents) > 0) {
-                $formula = null;
-            }
-        } catch (SyntaxException $ex) {
-            $errors[$ex->getCode()] = $ex->getMessage();
         }
         return (object)[
             'formula' => $formula,
-            'syntaxValid' => !isset($errors[SyntaxException::INVALID_SYNTAX]),
-            'parenthesesValid' => !isset($errors[SyntaxException::INVALID_PARENTHESES]),
+            'syntaxValid' => $syntaxValid,
+            'parenthesesValid' => $parenthesisValid,
             'invalidComponents' => $invalidComponents,
+            'errors' => $error,
         ];
     }
 
     static private function getDefaultOperators() {
-        return Operator::getOperators();
+        return [
+            new AdditionOperator(),
+            new DivisionOperator(),
+            new MultiplicationOperator(),
+            new SubtractionOperator(),
+        ];
+    }
+
+    static private function validExpression($expression, $operators) {
+        $exp = self::VARIABLE_EXP.'|'.self::CONSTANT_EXP;
+        $symbols = implode('', array_map(function($operator) { return "\\{$operator->getSymbol()}"; }, $operators));
+        $regexp = "/^($exp)\s*([$symbols]\s*($exp)\s*)*$/";
+        return preg_match($regexp, str_replace('(', '', str_replace(')', '', trim($expression)))) === 1;
+    }
+
+    static private function validParenthesis($components) {
+        $parenthesis = [];
+        foreach ($components as $component) {
+            if ($component == '(') {
+                array_push($parenthesis, $component);
+            } else if ($component == ')') {
+                if (count($parenthesis) > 0) {
+                    array_pop($parenthesis);
+                } else {
+                    return false;
+                }
+            }
+        }
+        return count($parenthesis) == 0;
+    }
+
+    static private function splitExpression($expression, $operators) {
+        $exp = self::VARIABLE_EXP.'|'.self::CONSTANT_EXP;
+        $symbols = implode('', array_map(function($operator) { return "\\{$operator->getSymbol()}"; }, $operators));
+        $regexp = "/[$symbols\\(\\)]|$exp/";
+        $matches = [];
+        preg_match_all($regexp, $expression, $matches);
+        return $matches[0];
     }
 
     static private function isConstant($component) {
@@ -64,11 +100,11 @@ class Formula {
     public function __construct($expression, $operators = null) {
         $this->expression = trim($expression);
         $this->operators = $operators ?? self::getDefaultOperators();
-        if (!$this->syntaxisValid()) {
+        if (!self::validExpression($expression, $operators)) {
             throw SyntaxException::invalidSyntax();
         }
-        $this->components = $this->splitComponents();
-        if (!$this->ParenthesisValid()) {
+        $this->components = self::splitExpression($expression, $operators);
+        if (!self::validParenthesis($components)) {
             throw SyntaxException::invalidParentheses();
         }
     }
@@ -125,38 +161,6 @@ class Formula {
             return strtr($this->expression, $this->variables);
         }
         return $this->expression;
-    }
-
-    private function syntaxisValid() {
-        $exp = self::VARIABLE_EXP.'|'.self::CONSTANT_EXP;
-        $operators = implode('', array_map(function($operator) { return "\\{$operator->getSymbol()}"; }, $this->operators));
-        $regexp = "/^($exp)([$operators]($exp))*$/";
-        return preg_match($regexp, str_replace('(', '', str_replace(')', '', $this->expression))) === 1;
-    }
-
-    private function ParenthesisValid() {
-        $parenthesis = [];
-        foreach ($this->components as $component) {
-            if ($component == '(') {
-                array_push($parenthesis, $component);
-            } else if ($component == ')') {
-                if (count($parenthesis) > 0) {
-                    array_pop($parenthesis);
-                } else {
-                    return false;
-                }
-            }
-        }
-        return count($parenthesis) == 0;
-    }
-
-    private function splitComponents() {
-        $exp = self::VARIABLE_EXP.'|'.self::CONSTANT_EXP;
-        $operators = implode('', array_map(function($operator) { return "\\{$operator->getSymbol()}"; }, $this->operators));
-        $regexp = "/[$operators\\(\\)]|$exp/";
-        $matches = [];
-        preg_match_all($regexp, $this->expression, $matches);
-        return $matches[0];
     }
 
     private function toPostFixComponents() {

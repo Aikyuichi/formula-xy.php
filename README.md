@@ -1,4 +1,8 @@
 # FormulaXY
+![Static Badge](https://img.shields.io/badge/PHP-≥7.2-orange)
+![Packagist Version](https://img.shields.io/packagist/v/Aikyuichi/formula-xy)
+![Packagist License](https://img.shields.io/packagist/l/Aikyuichi/formula-xy)
+
 Formula evaluator
 
 ## Usage
