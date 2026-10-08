@@ -5,7 +5,17 @@
 
 namespace Aikyuichi\FormulaXY\Operators;
 
-abstract class  BinaryOperator extends Operator {
+/**
+ * Base class for binary operators that accept two operands.
+ */
+abstract class BinaryOperator extends Operator {
 
+    /**
+     * Applies the operator to two values.
+     *
+     * @param int|float $value1 First operand.
+     * @param int|float $value2 Second operand.
+     * @return int|float
+     */
     public abstract function resolve($value1, $value2);
 }

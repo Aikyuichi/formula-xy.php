@@ -7,6 +7,11 @@
             "Aikyuichi\\FormulaXY\\": "src/"
         }
     },
+    "autoload-dev": {
+        "psr-4": {
+            "Aikyuichi\\FormulaXY\\Tests\\": "tests/"
+        }
+    },
     "authors": [
         {
             "name": "Aikyuichi",
@@ -15,5 +20,11 @@
     ],
     "require": {
         "php": ">=7.2"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^8.5"
+    },
+    "scripts": {
+        "test": "phpunit"
     }
 }

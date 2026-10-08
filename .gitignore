@@ -2,3 +2,4 @@
 composer.phar
 test.php
 /vendor/
+/.phpunit.result.cache

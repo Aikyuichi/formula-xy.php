@@ -5,12 +5,25 @@
 
 namespace Aikyuichi\FormulaXY\Operators;
 
+/**
+ * Multiplies two numeric values.
+ */
 class Multiplication extends BinaryOperator {
 
+    /**
+     * Initializes the multiplication operator.
+     */
     public function __construct() {
-        parent::__construct('*', 0);
+        parent::__construct('*', 1);
     }
 
+    /**
+     * Multiplies the two provided values.
+     *
+     * @param int|float $value1 First operand.
+     * @param int|float $value2 Second operand.
+     * @return int|float
+     */
     public function resolve($value1, $value2) {
         return $value1 * $value2;
     }
