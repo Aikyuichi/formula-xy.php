@@ -11,6 +11,13 @@ echo "FormulaXY complete example\n";
 echo "=========================\n";
 
 try {
+    // $formula = new Formula('{a} + {b} * -1');
+    // $formula->setVariables([
+    //     '{a}' => 5,
+    //     '{b}' => 10,
+    // ]);
+    // print_r($formula->getResult());
+
     $subtotal = 120.00;
     $taxRate = 8.5;
     $shipping = 15.00;

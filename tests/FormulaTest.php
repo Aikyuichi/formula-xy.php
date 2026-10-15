@@ -69,7 +69,7 @@ class FormulaTest extends TestCase {
             new Formula('(2 + 3');
             $this->fail('Expected invalid parentheses to throw an exception.');
         } catch (SyntaxException $exception) {
-            $this->assertSame(SyntaxException::INVALID_PARENTHESES, $exception->getCode());
+            $this->assertSame(SyntaxException::MISMATCHED_PARENTHESES, $exception->getCode());
         }
     }
 }

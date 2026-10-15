@@ -254,9 +254,7 @@ class Formula {
      */
     public function setVariables($variables) {
         foreach ($variables as $name => $value) {
-            if (array_key_exists($name, $this->variables)) {
-                $this->setVariable($name, $value);
-            }
+            $this->setVariable($name, $value);
         }
     }
 

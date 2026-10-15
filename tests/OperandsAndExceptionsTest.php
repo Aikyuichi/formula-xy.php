@@ -37,12 +37,12 @@ class OperandsAndExceptionsTest extends TestCase {
     }
 
     public function testSyntaxExceptionFactoryMethodsUseExpectedMessagesAndCodes() {
-        $syntaxException = SyntaxException::invalidSyntax();
-        $parenthesesException = SyntaxException::invalidParentheses();
+        $syntaxException = SyntaxException::invalidSyntaxException();
+        $parenthesesException = SyntaxException::mismatchedParenthesesException();
 
         $this->assertSame('Invalid syntax.', $syntaxException->getMessage());
         $this->assertSame(SyntaxException::INVALID_SYNTAX, $syntaxException->getCode());
-        $this->assertSame('Invalid parentheses.', $parenthesesException->getMessage());
-        $this->assertSame(SyntaxException::INVALID_PARENTHESES, $parenthesesException->getCode());
+        $this->assertSame('Mismatched parentheses.', $parenthesesException->getMessage());
+        $this->assertSame(SyntaxException::MISMATCHED_PARENTHESES, $parenthesesException->getCode());
     }
 }
