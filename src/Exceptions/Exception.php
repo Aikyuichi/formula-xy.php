@@ -7,16 +7,19 @@ namespace Aikyuichi\FormulaXY\Exceptions;
  */
 class Exception extends \Exception {
     /** @var int */
-    public const NOT_IMPLEMENTED = 0;
+    const NOT_IMPLEMENTED = 0;
 
     /** @var int */
-    public const INVALID_SYNTAX = 1;
+    const INVALID_SYNTAX = 1;
 
     /** @var int */
-    public const MISMATCHED_PARENTHESES = 2;
+    const MISMATCHED_PARENTHESES = 2;
 
     /** @var int */
-    public const INVALID_VARIABLE = 500;
+    const INVALID_NOTATION = 500;
+
+    /** @var int */
+    const INVALID_VARIABLE = 501;
 
     /**
      * Creates a generic not-implemented exception.

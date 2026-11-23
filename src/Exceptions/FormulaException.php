@@ -7,6 +7,17 @@ namespace Aikyuichi\FormulaXY\Exceptions;
  */
 class FormulaException extends Exception {
     /**
+     * Creates an exception for an invalid notation.
+     *
+     * @param string $message Descriptive error message.
+     * @param \Throwable|null $previous Previous exception for chaining.
+     * @return FormulaException
+     */
+    static public function invalidNotationException($message = "Invalid notation.", $previous = null) {
+        return new self($message, self::INVALID_NOTATION, $previous);
+    }
+
+    /**
      * Creates an exception for an invalid variable.
      *
      * @param string $message Descriptive error message.

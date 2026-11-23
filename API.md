@@ -193,7 +193,7 @@ Base exception class for the package.
 - `NOT_IMPLEMENTED = 0`
 - `INVALID_SYNTAX = 1`
 - `MISMATCHED_PARENTHESES = 2`
-- `INVALID_VARIABLE = 500`
+- `INVALID_VARIABLE = 501`
 
 ### Static methods
 

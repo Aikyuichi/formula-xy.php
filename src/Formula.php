@@ -19,12 +19,16 @@ class Formula {
     /**
      * Regular expression used to identify variables such as {x}.
      */
-    public const VARIABLE_EXP = '{[^{}]+}';
+    const VARIABLE_EXP = '{[^{}]+}';
 
     /**
      * Regular expression used to identify numeric constants.
      */
-    public const CONSTANT_EXP = '\d+[.]?\d*';
+    const CONSTANT_EXP = '[0-9]+[.]?[0-9]*';
+
+    const INFIX_NOTATION = 0;
+    const POSTFIX_NOTATION = 1;
+    // const PREFIX_NOTATION = 2;
 
     /** @var string Original formula expression. */
     private $expression;
@@ -262,13 +266,27 @@ class Formula {
      * Returns the original expression or a version with the configured variables applied.
      *
      * @param bool $replaced Whether to replace placeholders in the expression.
+     * @param int $notation Notation type to use for the output string.
+     * * INFIX_NOTATION: Standard infix notation (default). e.g. (a + b) * c
+     * * POSTFIX_NOTATION: Reverse Polish notation. e.g. a b + c *
+     * @throws Exceptions\FormulaException When an unsupported notation type is requested.
      * @return string
      */
-    public function toString($replaced = false) {
-        if ($replaced) {
-            return strtr($this->expression, $this->variables);
+    public function toString($replaced = false, $notation = self::INFIX_NOTATION) {
+        switch ($notation) {
+            case self::INFIX_NOTATION:
+                $expression = $this->expression;
+                break;
+            case self::POSTFIX_NOTATION:
+                $expression = implode(' ', $this->toPostFixComponents());
+                break;
+            default:
+                throw Exceptions\FormulaException::invalidNotationException("Unsupported notation type: $notation");
         }
-        return $this->expression;
+        if ($replaced) {
+            return strtr($expression, $this->variables);
+        }
+        return $expression;
     }
 
     /**

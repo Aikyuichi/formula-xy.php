@@ -1,6 +1,6 @@
 # Changelog
 
-## 0.8.0
+## 0.9.0
 
 ### Added
 - Added a standalone complete usage example in [example.php](example.php).
